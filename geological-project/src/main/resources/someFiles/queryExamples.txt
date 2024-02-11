@@ -1,0 +1,63 @@
+for put/post sections
+{
+  "name": "Section 49",
+  "geologicalClasses": [
+    { "name": "Geo Class 491", "code": "GC491" },
+    { "name": "Geo Class 491", "code": "GC491" },
+    { "name": "Geo Class 491", "code": "GC491" },
+    { "name": "Geo Class 491", "code": "GC491" },
+    { "name": "Geo Class 491", "code": "GC491" }
+  ]
+}
+
+for put/post GC
+{
+  "name": "Geo Class 991",
+  "code": "GC991",
+  "active": true,
+  "sectionId": 1
+}
+
+SQL result table
+WITH class_pivot AS (
+    SELECT
+        s.name AS section_name,
+        MAX(CASE WHEN gc.class_number = 1 THEN gc.name END) AS geo_class_name_1,
+        MAX(CASE WHEN gc.class_number = 1 THEN gc.code END) AS geo_class_code_1,
+        MAX(CASE WHEN gc.class_number = 2 THEN gc.name END) AS geo_class_name_2,
+        MAX(CASE WHEN gc.class_number = 2 THEN gc.code END) AS geo_class_code_2,
+        MAX(CASE WHEN gc.class_number = 3 THEN gc.name END) AS geo_class_name_3,
+        MAX(CASE WHEN gc.class_number = 3 THEN gc.code END) AS geo_class_code_3,
+        MAX(CASE WHEN gc.class_number = 4 THEN gc.name END) AS geo_class_name_4,
+        MAX(CASE WHEN gc.class_number = 4 THEN gc.code END) AS geo_class_code_4,
+        MAX(CASE WHEN gc.class_number = 5 THEN gc.name END) AS geo_class_name_5,
+        MAX(CASE WHEN gc.class_number = 5 THEN gc.code END) AS geo_class_code_5,
+        MAX(CASE WHEN gc.class_number = 6 THEN gc.name END) AS geo_class_name_6,
+        MAX(CASE WHEN gc.class_number = 6 THEN gc.code END) AS geo_class_code_6,
+        MAX(CASE WHEN gc.class_number = 7 THEN gc.name END) AS geo_class_name_7,
+        MAX(CASE WHEN gc.class_number = 7 THEN gc.code END) AS geo_class_code_7,
+        MAX(CASE WHEN gc.class_number = 8 THEN gc.name END) AS geo_class_name_8,
+        MAX(CASE WHEN gc.class_number = 8 THEN gc.code END) AS geo_class_code_8,
+        MAX(CASE WHEN gc.class_number = 9 THEN gc.name END) AS geo_class_name_9,
+        MAX(CASE WHEN gc.class_number = 9 THEN gc.code END) AS geo_class_code_9,
+        MAX(CASE WHEN gc.class_number = 10 THEN gc.name END) AS geo_class_name_10,
+        MAX(CASE WHEN gc.class_number = 10 THEN gc.code END) AS geo_class_code_10
+    FROM
+        sections s
+            LEFT JOIN (
+            SELECT
+                section_id,
+                name,
+                code,
+                ROW_NUMBER() OVER (PARTITION BY section_id ORDER BY id) AS class_number
+            FROM
+                geological_classes
+        ) gc ON s.id = gc.section_id
+    GROUP BY
+        s.name, gc.class_number
+    ORDER BY
+        s.name, gc.class_number
+)
+
+-- Запрос для выборки данных из временной таблицы
+SELECT * FROM class_pivot;
