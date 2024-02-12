@@ -40,8 +40,6 @@ public class ImportExportServiceImpl {
         try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
 
-            // Ваши дополнительные логика и обработка данных из файла
-
             jobEntity.setStatus(JobStatus.DONE);
         } catch (Exception e) {
             jobEntity.setStatus(JobStatus.ERROR);
@@ -56,7 +54,7 @@ public class ImportExportServiceImpl {
     @Async
     @Transactional
     public CompletableFuture<JobResult> exportAsync() {
-        List<Section> sections = sectionService.getAllSections();
+        List<Section> sections = sectionService.findAll();
         JobResult jobEntity = new JobResult();
         jobEntity.setStatus(JobStatus.IN_PROGRESS);
         jobRepository.save(jobEntity);
@@ -69,7 +67,6 @@ public class ImportExportServiceImpl {
             Cell sectionHeader = headerRow.createCell(0);
             sectionHeader.setCellValue("Section");
 
-            // Получение максимального количества классов в секции
             int maxClassCount = sections.stream()
                     .mapToInt(section -> section.getGeologicalClasses().size())
                     .max()
@@ -111,7 +108,7 @@ public class ImportExportServiceImpl {
                 }
             }
 
-            // Сохранение в файл
+            // saving
             try (FileOutputStream fileOut = new FileOutputStream("geological_data.xls")) {
                 workbook.write(fileOut);
             } catch (IOException e) {

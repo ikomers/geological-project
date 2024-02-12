@@ -2,6 +2,7 @@ package natlex.example.geologicalproject.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import natlex.example.geologicalproject.aspect.annotation.Authorized;
 import natlex.example.geologicalproject.data.entity.JobResult;
 import natlex.example.geologicalproject.service.impl.ImportExportServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/files")
 @Slf4j
 @RequiredArgsConstructor
+@Authorized
 public class FileController {
 
     private final ImportExportServiceImpl importExportService;

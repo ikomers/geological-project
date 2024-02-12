@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface SectionRepository extends JpaRepository<Section, Long> {
-    List<Section> findByGeologicalClassesCode(String code);
+    Section findByName(String name);
 }

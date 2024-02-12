@@ -8,11 +8,13 @@ import java.util.List;
 public interface SectionService {
     Section findById(Long id);
 
-    List<Section> getAllSections();
+    List<Section> findAll();
 
-    Section createSection(Section section);
+    Section save(Section section);
 
-    Section updateSection(Long sectionId, Section section);
+    Section update(Long sectionId, Section section);
 
-    void deleteSection(Long sectionId);
+    Section findByName(String name);
+
+    void delete(Long sectionId);
 }

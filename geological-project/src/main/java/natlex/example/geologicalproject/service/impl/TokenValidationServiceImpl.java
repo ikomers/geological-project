@@ -1,3 +1,4 @@
+/*
 package natlex.example.geologicalproject.service.impl;
 
 
@@ -19,4 +20,4 @@ public class TokenValidationServiceImpl implements TokenValidationService {
             throw new NotAuthorizedException("Not Authorized");
         }
     }
-}
+}*/

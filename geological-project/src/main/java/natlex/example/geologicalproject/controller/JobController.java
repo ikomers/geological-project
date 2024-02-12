@@ -3,6 +3,7 @@ package natlex.example.geologicalproject.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import natlex.example.geologicalproject.aspect.annotation.Authorized;
 import natlex.example.geologicalproject.data.entity.JobResult;
 import natlex.example.geologicalproject.service.impl.JobResultServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @Slf4j
 @AllArgsConstructor
+@Authorized
 public class JobController {
     private final JobResultServiceImpl jobService;
 
