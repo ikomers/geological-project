@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface SectionRepository extends JpaRepository<Section, Long> {
     Section findByName(String name);
+//    List<Section> findByGeologicalClassesCode(String code);
 }

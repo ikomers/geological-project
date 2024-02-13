@@ -10,11 +10,13 @@ public interface SectionService {
 
     List<Section> findAll();
 
-    Section save(Section section);
+    void save(Section section);
 
-    Section update(Long sectionId, Section section);
+    void update(Long sectionId, Section section);
 
     Section findByName(String name);
 
     void delete(Long sectionId);
+
+//    List<Section> getSectionsByGeologicalClassCode(String code);
 }

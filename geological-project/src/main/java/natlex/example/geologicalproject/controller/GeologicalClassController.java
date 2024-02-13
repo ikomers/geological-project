@@ -52,7 +52,7 @@ public class GeologicalClassController {
     public RestResponse updateGeologicalClass(@PathVariable Long id, @RequestBody @Valid GeologicalClassDto geologicalClassDto) {
         log.info("Received request to update GeologicalClass with ID {}: {}", id, geologicalClassDto);
         geologicalClassService.update(id, geologicalClassMapper.toEntity(geologicalClassDto));
-        return new RestResponse("updated");
+        return new RestResponse("Geological class updated successfully");
     }
 
     @DeleteMapping("/{id}")

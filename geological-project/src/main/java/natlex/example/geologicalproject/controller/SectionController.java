@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sections")
@@ -27,7 +28,6 @@ public class SectionController {
     private final SectionService sectionService;
     private final SectionMapper sectionMapper;
 
-    //TODO validation
     @Value("${auth.token}")
     private String token;
     @Value("${auth.header.name}")
@@ -49,11 +49,18 @@ public class SectionController {
         return new RestResponse(sectionMapper.toDto(section));
     }
 
+ /*   @GetMapping("/by-code")
+    public RestResponse getSectionsByGeologicalClassCode(@RequestParam String code) {
+        List<Section> sections = sectionService.getSectionsByGeologicalClassCode(code);
+        return new RestResponse(sections);
+    }
+*/
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse createSection(@RequestBody @Valid SectionDto sectionDto) {
         log.info("Received request to create a new section: {}", sectionDto);
         Section createdSection = sectionMapper.toEntity(sectionDto);
+        sectionService.save(createdSection);
         return new RestResponse(sectionMapper.toDto(createdSection));
     }
 

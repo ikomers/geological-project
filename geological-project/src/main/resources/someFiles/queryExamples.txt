@@ -10,11 +10,18 @@ for put/post sections
   ]
 }
 
+{
+  "name": "Section 14",
+  "geologicalClasses": [
+    { "name": "Geo Class 145", "code": "GC145" },
+    { "name": "Geo Class 146", "code": "GC146" }
+  ]
+}
+
 for put/post GC
 {
   "name": "Geo Class 991",
   "code": "GC991",
-  "active": true,
   "sectionId": 1
 }
 
