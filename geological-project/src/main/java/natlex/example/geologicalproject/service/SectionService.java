@@ -19,4 +19,7 @@ public interface SectionService {
     void delete(Long sectionId);
 
     List<Section> getSectionsByGeologicalClassCode(String code);
+
+    void saveAll(List<Section> sections);
+
 }

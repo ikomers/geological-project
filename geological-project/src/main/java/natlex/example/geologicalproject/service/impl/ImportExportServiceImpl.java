@@ -1,25 +1,24 @@
 package natlex.example.geologicalproject.service.impl;
 
-
-import lombok.AllArgsConstructor;
-import natlex.example.geologicalproject.data.dtos.GeologicalClassDto;
-import natlex.example.geologicalproject.data.dtos.SectionDto;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import natlex.example.geologicalproject.data.entity.GeologicalClass;
 import natlex.example.geologicalproject.data.entity.JobResult;
 import natlex.example.geologicalproject.data.entity.JobStatus;
 import natlex.example.geologicalproject.data.entity.Section;
-import natlex.example.geologicalproject.data.mapper.SectionMapper;
-import natlex.example.geologicalproject.repositories.JobResultRepository;
+import natlex.example.geologicalproject.service.ImportExportService;
+import natlex.example.geologicalproject.service.JobResultService;
+import natlex.example.geologicalproject.service.SectionService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,32 +29,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-@AllArgsConstructor
-public class ImportExportServiceImpl {
-    private final JobResultRepository jobRepository;
-    private final SectionServiceImpl sectionService;
-    private final SectionMapper sectionMapper;
+@RequiredArgsConstructor
+public class ImportExportServiceImpl implements ImportExportService {
+    private final JobResultService jobResultService;
+    private final SectionService sectionService;
+    private final ApplicationContext applicationContext;
+    private ImportExportService importExportService;
 
-    @Async
-    @Transactional
-    public CompletableFuture<JobResult> importAsync(MultipartFile file) {
-        JobResult jobEntity = new JobResult();
-        jobEntity.setStatus(JobStatus.IN_PROGRESS);  //1 step
-        jobRepository.save(jobEntity);
-
-        try (Workbook workbook = new HSSFWorkbook(file.getInputStream())) {
-            processImportedData(workbook);
-        } catch (Exception e) {
-            jobEntity.setStatus(JobStatus.ERROR);
-            jobEntity.setResult("Error during import: " + e.getMessage());
-        } finally {
-            jobRepository.save(jobEntity);
-        }
-
-        return CompletableFuture.completedFuture(jobEntity);
+    @PostConstruct
+    public void init() {
+        importExportService = applicationContext.getBean(ImportExportService.class);
     }
 
-    private void processImportedData(Workbook workbook) {
+    public JobResult importAsync(MultipartFile file) {
+        JobResult jobResult = jobResultService.create();
+        importExportService.importData(file, jobResult);
+        return jobResult;
+    }
+
+    @Transactional
+    @Async
+    public void importData(MultipartFile file, JobResult jobResult) {
+        try (Workbook workbook = new HSSFWorkbook(file.getInputStream())) {
+            List<Section> sections = processImportedData(workbook);
+            sectionService.saveAll(sections);
+            jobResult.setStatus(JobStatus.DONE);
+            jobResult.setResult("Import successful");
+            jobResultService.save(jobResult);
+        } catch (Exception e) {
+            // to check with exitis names
+            jobResult.setStatus(JobStatus.ERROR);
+            jobResult.setResult("Error during import: " + e.getMessage());
+        } finally {
+            jobResultService.save(jobResult);
+        }
+    }
+
+    private List<Section> processImportedData(Workbook workbook) {
+        List<Section> sections = new ArrayList<>();
         for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
 
@@ -70,33 +81,29 @@ public class ImportExportServiceImpl {
                         continue;
                     }
 
-                    List<GeologicalClassDto> geologicalClasses = new ArrayList<>();
+                    List<GeologicalClass> geologicalClasses = new ArrayList<>();
                     for (int i = 1; i < row.getLastCellNum(); i += 2) {
                         String className = row.getCell(i).getStringCellValue();
                         String classCode = row.getCell(i + 1).getStringCellValue();
 
                         if (isValidData(sectionNumber, className, classCode)) {
-                            GeologicalClassDto geologicalClassDto = new GeologicalClassDto();
-                            geologicalClassDto.setName(className);
-                            geologicalClassDto.setCode(classCode);
+                            GeologicalClass geologicalClass = new GeologicalClass();
+                            geologicalClass.setName(className);
+                            geologicalClass.setCode(classCode);
 
-                            geologicalClasses.add(geologicalClassDto);
+                            geologicalClasses.add(geologicalClass);
                         }
                     }
 
-                    SectionDto sectionDto = new SectionDto();
-                    sectionDto.setName(sectionName);
-                    sectionDto.setGeologicalClasses(geologicalClasses);
+                    Section section = new Section();
+                    section.setName(sectionName);
+                    section.setGeologicalClasses(geologicalClasses);
 
-                    Section existingSection = sectionService.findByName(sectionName);
-                    if (existingSection != null) {
-                        sectionService.update(existingSection.getId(), sectionMapper.toEntity(sectionDto));
-                    } else {
-                        sectionService.save(sectionMapper.toEntity(sectionDto));
-                    }
+                    sections.add(section);
                 }
             }
         }
+        return sections;
     }
 
     private String extractSectionNumber(String sectionName) {
@@ -153,7 +160,7 @@ public class ImportExportServiceImpl {
 
         JobResult jobEntity = new JobResult();
         jobEntity.setStatus(JobStatus.IN_PROGRESS);
-        jobRepository.save(jobEntity);
+        jobResultService.save(jobEntity);
 
         try (Workbook workbook = new HSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("list1");
@@ -217,7 +224,7 @@ public class ImportExportServiceImpl {
             jobEntity.setStatus(JobStatus.ERROR);
             jobEntity.setResult("Error during export: " + e.getMessage());
         } finally {
-            jobRepository.save(jobEntity);
+            jobResultService.save(jobEntity);
         }
 
         return CompletableFuture.completedFuture(jobEntity);

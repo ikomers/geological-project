@@ -22,6 +22,7 @@ public class GeologicalClassController {
     private final GeologicalClassMapper geologicalClassMapper;
     private final GeologicalClassService geologicalClassService;
 
+    @Authorized
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public RestResponse getAllGeologicalClasses() {
@@ -30,6 +31,7 @@ public class GeologicalClassController {
         return new RestResponse(geologicalClasses);
     }
 
+    @Authorized
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RestResponse getGeologicalClassById(@PathVariable Long id) {
@@ -38,6 +40,7 @@ public class GeologicalClassController {
         return new RestResponse(geologicalClassMapper.toDto(geologicalClass));
     }
 
+    @Authorized
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse createGeologicalClass(@RequestBody @Valid GeologicalClassDto geologicalClassDto) {
@@ -46,6 +49,7 @@ public class GeologicalClassController {
         return new RestResponse(geologicalClassMapper.toDto(geologicalClass));
     }
 
+    @Authorized
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RestResponse updateGeologicalClass(@PathVariable Long id, @RequestBody @Valid GeologicalClassDto geologicalClassDto) {
@@ -54,6 +58,7 @@ public class GeologicalClassController {
         return new RestResponse("Geological class updated successfully");
     }
 
+    @Authorized
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RestResponse deleteGeologicalClass(@PathVariable Long id) {

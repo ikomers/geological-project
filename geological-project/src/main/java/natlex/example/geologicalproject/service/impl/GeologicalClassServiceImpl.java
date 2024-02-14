@@ -5,7 +5,10 @@ import natlex.example.geologicalproject.data.entity.GeologicalClass;
 import natlex.example.geologicalproject.exceptions.NotFoundException;
 import natlex.example.geologicalproject.repositories.GeologicalClassRepository;
 import natlex.example.geologicalproject.service.GeologicalClassService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +33,7 @@ public class GeologicalClassServiceImpl implements GeologicalClassService {
         return geologicalClassRepository.save(geologicalClass);
     }
 
+    @Transactional (propagation = Propagation.NESTED)
     @Override
     public void saveAll(List<GeologicalClass> geologicalClasses) {
         geologicalClassRepository.saveAll(geologicalClasses);

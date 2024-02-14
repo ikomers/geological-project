@@ -19,7 +19,7 @@ public class AuthorizationAspect {
 
     @Around("@annotation(natlex.example.geologicalproject.aspect.annotation.Authorized)")
     public Object checkAuthorization(ProceedingJoinPoint joinPoint) throws Throwable {
-        String token = request.getHeader("X-Bookmap-Token");
+        String token = request.getHeader("X-Auth-Token");
         if (token == null || !token.equals(competitionManagementToken)) {
             throw new NotAuthorizedException("Not Authorized");
         }

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @ToString(exclude = "section_id")
 @Table(name = "geological_classes")
 @Where(clause = "is_deleted = false")
-public class GeologicalClass {
+public class GeologicalClass implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "bigint")

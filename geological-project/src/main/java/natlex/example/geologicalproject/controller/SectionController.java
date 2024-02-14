@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/sections")
 @RequiredArgsConstructor
 @Slf4j
-
-
 public class SectionController {
     private final SectionService sectionService;
     private final SectionMapper sectionMapper;

@@ -2,6 +2,7 @@ package natlex.example.geologicalproject.controller;
 
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import natlex.example.geologicalproject.aspect.annotation.Authorized;
 import natlex.example.geologicalproject.data.entity.JobResult;
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JobController {
     private final JobResultServiceImpl jobService;
 
@@ -29,6 +30,7 @@ public class JobController {
         return jobService.importData(filePath);
     }
 
+    @Authorized
     @PostMapping("/export")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public CompletableFuture<JobResult> exportData(@RequestParam String filePath) {
