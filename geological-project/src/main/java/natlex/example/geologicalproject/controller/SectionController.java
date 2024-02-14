@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 
-//TODO AUTH!
 
-@Authorized
 public class SectionController {
     private final SectionService sectionService;
     private final SectionMapper sectionMapper;
@@ -33,6 +31,7 @@ public class SectionController {
     @Value("${auth.header.name}")
     private String header;
 
+    @Authorized
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public RestResponse getAllSections() {
@@ -41,6 +40,8 @@ public class SectionController {
         return new RestResponse(sections);
     }
 
+
+    @Authorized
     @GetMapping("/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public RestResponse findById(@PathVariable Long sectionId) {
@@ -49,12 +50,14 @@ public class SectionController {
         return new RestResponse(sectionMapper.toDto(section));
     }
 
- /*   @GetMapping("/by-code")
+    @Authorized
+    @GetMapping("/by-code")
     public RestResponse getSectionsByGeologicalClassCode(@RequestParam String code) {
         List<Section> sections = sectionService.getSectionsByGeologicalClassCode(code);
         return new RestResponse(sections);
     }
-*/
+
+    @Authorized
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse createSection(@RequestBody @Valid SectionDto sectionDto) {
@@ -64,6 +67,8 @@ public class SectionController {
         return new RestResponse(sectionMapper.toDto(createdSection));
     }
 
+    //TODO PATCH
+    @Authorized
     @PutMapping("/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public RestResponse updateSection(@PathVariable Long sectionId,
@@ -75,6 +80,7 @@ public class SectionController {
         return new RestResponse("updated");
     }
 
+    @Authorized
     @DeleteMapping("/{sectionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSection(@PathVariable Long sectionId) {

@@ -10,6 +10,8 @@ for put/post sections
   ]
 }
 
+
+
 {
   "name": "Section 14",
   "geologicalClasses": [
@@ -23,6 +25,11 @@ for put/post GC
   "name": "Geo Class 991",
   "code": "GC991",
   "sectionId": 1
+}
+
+{
+    "name": "Geo Class 133",
+    "code": "GC133"
 }
 
 SQL result table

@@ -30,10 +30,10 @@ public class SectionServiceImpl implements SectionService {
     }
 
     //TODO
-//    @Override
-//    public List<Section> getSectionsByGeologicalClassCode(String code) {
-//        return sectionRepository.findByGeologicalClassesCode(code);
-//    }
+    @Override
+    public List<Section> getSectionsByGeologicalClassCode(String code) {
+        return sectionRepository.findByGeologicalClassesCode(code);
+    }
 
     @Override
     @Transactional

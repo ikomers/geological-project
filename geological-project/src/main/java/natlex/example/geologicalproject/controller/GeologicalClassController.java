@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/geological-classes")
 @RequiredArgsConstructor
 @Slf4j
-@Authorized
 public class GeologicalClassController {
     private final GeologicalClassMapper geologicalClassMapper;
     private final GeologicalClassService geologicalClassService;

@@ -18,10 +18,10 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @Slf4j
 @AllArgsConstructor
-@Authorized
 public class JobController {
     private final JobResultServiceImpl jobService;
 
+    @Authorized
     @PostMapping("/import")
     @ResponseStatus(HttpStatus.CREATED)
     public CompletableFuture<JobResult> importData(@RequestParam String filePath) {

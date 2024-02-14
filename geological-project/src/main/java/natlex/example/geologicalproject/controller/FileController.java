@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/files")
 @Slf4j
 @RequiredArgsConstructor
-@Authorized
+
 public class FileController {
     private final ImportExportServiceImpl importExportService;
 

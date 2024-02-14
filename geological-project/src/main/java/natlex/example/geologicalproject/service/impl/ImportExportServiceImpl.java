@@ -40,11 +40,11 @@ public class ImportExportServiceImpl {
     @Transactional
     public CompletableFuture<JobResult> importAsync(MultipartFile file) {
         JobResult jobEntity = new JobResult();
-        jobEntity.setStatus(JobStatus.IN_PROGRESS);
+        jobEntity.setStatus(JobStatus.IN_PROGRESS);  //1 step
         jobRepository.save(jobEntity);
 
         try (Workbook workbook = new HSSFWorkbook(file.getInputStream())) {
-            processImportedData(workbook, jobEntity);
+            processImportedData(workbook);
         } catch (Exception e) {
             jobEntity.setStatus(JobStatus.ERROR);
             jobEntity.setResult("Error during import: " + e.getMessage());
@@ -55,7 +55,7 @@ public class ImportExportServiceImpl {
         return CompletableFuture.completedFuture(jobEntity);
     }
 
-    private void processImportedData(Workbook workbook, JobResult jobEntity) {
+    private void processImportedData(Workbook workbook) {
         for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
 
@@ -74,7 +74,6 @@ public class ImportExportServiceImpl {
                     for (int i = 1; i < row.getLastCellNum(); i += 2) {
                         String className = row.getCell(i).getStringCellValue();
                         String classCode = row.getCell(i + 1).getStringCellValue();
-                        String classNumber = extractClassNumber(className);
 
                         if (isValidData(sectionNumber, className, classCode)) {
                             GeologicalClassDto geologicalClassDto = new GeologicalClassDto();

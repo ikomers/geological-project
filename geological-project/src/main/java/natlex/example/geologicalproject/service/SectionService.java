@@ -18,5 +18,5 @@ public interface SectionService {
 
     void delete(Long sectionId);
 
-//    List<Section> getSectionsByGeologicalClassCode(String code);
+    List<Section> getSectionsByGeologicalClassCode(String code);
 }
