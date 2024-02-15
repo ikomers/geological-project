@@ -9,14 +9,13 @@ import natlex.example.geologicalproject.service.ImportFileService;
 import natlex.example.geologicalproject.service.JobResultService;
 import natlex.example.geologicalproject.service.SectionService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,10 +26,12 @@ public class ImportFileServiceImpl implements ImportFileService {
     private final JobResultService jobResultService;
 
     @Override
-    public JobResult importAsync(MultipartFile file) {
-        JobResult jobResult = jobResultService.create();
-        importData(file, jobResult);
-        return jobResult;
+    public CompletableFuture<JobResult> importAsync(MultipartFile file) {
+        return CompletableFuture.supplyAsync(() -> {
+            JobResult jobResult = jobResultService.create();
+            importData(file, jobResult);
+            return jobResult;
+        });
     }
 
     @Override
@@ -42,12 +43,16 @@ public class ImportFileServiceImpl implements ImportFileService {
             jobResult.setResult("Import successful");
             jobResultService.save(jobResult);
         } catch (Exception e) {
-            // to check with exitis names
             jobResult.setStatus(JobStatus.ERROR);
             jobResult.setResult("Error during import: " + e.getMessage());
         } finally {
             jobResultService.save(jobResult);
         }
+    }
+
+    @Override
+    public JobResult getImportStatus(Long id) {
+        return jobResultService.findById(id);
     }
 
     private List<Section> processImportedData(Workbook workbook) {
@@ -57,9 +62,11 @@ public class ImportFileServiceImpl implements ImportFileService {
 
             for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
                 Row row = sheet.getRow(rowIndex);
+                Cell sectionNameCell = row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
 
-                if (row != null) {
+                if (sectionNameCell.getCellType() == CellType.STRING) {
                     String sectionName = row.getCell(0).getStringCellValue();
+
                     String sectionNumber = extractSectionNumber(sectionName);
 
                     if (sectionNumber == null) {
@@ -137,5 +144,4 @@ public class ImportFileServiceImpl implements ImportFileService {
 
         return isValidClassCode(sectionNumber, geologicalClassNumber, geologicalClassCode);
     }
-
 }

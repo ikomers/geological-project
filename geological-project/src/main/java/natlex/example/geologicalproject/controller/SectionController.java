@@ -9,7 +9,6 @@ import natlex.example.geologicalproject.data.dtos.SectionDto;
 import natlex.example.geologicalproject.data.entity.Section;
 import natlex.example.geologicalproject.data.mapper.SectionMapper;
 import natlex.example.geologicalproject.service.SectionService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +22,6 @@ public class SectionController {
     private final SectionService sectionService;
     private final SectionMapper sectionMapper;
 
-    @Value("${auth.token}")
-    private String token;
-    @Value("${auth.header.name}")
-    private String header;
-
     @Authorized
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -36,7 +30,6 @@ public class SectionController {
         List<Section> sections = sectionService.findAll();
         return new RestResponse(sections);
     }
-
 
     @Authorized
     @GetMapping("/{sectionId}")
@@ -64,7 +57,6 @@ public class SectionController {
         return new RestResponse(sectionMapper.toDto(createdSection));
     }
 
-    //TODO PATCH
     @Authorized
     @PutMapping("/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
@@ -76,6 +68,18 @@ public class SectionController {
 
         return new RestResponse("updated");
     }
+
+    @PatchMapping("/{sectionId}")
+    @ResponseStatus(HttpStatus.OK)
+    public RestResponse patchSection(@PathVariable Long sectionId,
+                                     @RequestBody SectionDto sectionDto) {
+        log.info("Received request to patch section with ID {}: {}", sectionId, sectionDto);
+
+        sectionService.patch(sectionId, sectionDto);
+
+        return new RestResponse("patched");
+    }
+
 
     @Authorized
     @DeleteMapping("/{sectionId}")

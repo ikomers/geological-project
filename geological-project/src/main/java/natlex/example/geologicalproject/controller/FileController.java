@@ -2,6 +2,7 @@ package natlex.example.geologicalproject.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import natlex.example.geologicalproject.aspect.annotation.Authorized;
 import natlex.example.geologicalproject.data.RestResponse;
 import natlex.example.geologicalproject.data.entity.JobResult;
 import natlex.example.geologicalproject.service.ExportFileService;
@@ -13,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.concurrent.CompletableFuture;
 
-
 @RestController
 @RequestMapping("/api/files")
 @Slf4j
@@ -22,6 +22,7 @@ public class FileController {
     private final ImportFileService importFileService;
     private final ExportFileService exportFileService;
 
+    @Authorized
     @PostMapping("/import")
     @ResponseStatus(HttpStatus.CREATED)
     public RestResponse importFile(@RequestParam("file") MultipartFile file) {
@@ -29,6 +30,7 @@ public class FileController {
         return new RestResponse(importFileService.importAsync(file));
     }
 
+    @Authorized
     @GetMapping("/export")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<JobResult> exportFile() {

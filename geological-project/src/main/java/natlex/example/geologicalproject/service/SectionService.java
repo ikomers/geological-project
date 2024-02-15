@@ -1,6 +1,7 @@
 package natlex.example.geologicalproject.service;
 
 
+import natlex.example.geologicalproject.data.dtos.SectionDto;
 import natlex.example.geologicalproject.data.entity.Section;
 
 import java.util.List;
@@ -22,4 +23,5 @@ public interface SectionService {
 
     void saveAll(List<Section> sections);
 
+    void patch(Long sectionId, SectionDto sectionDto);
 }

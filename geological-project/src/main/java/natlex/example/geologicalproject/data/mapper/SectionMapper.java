@@ -23,7 +23,6 @@ public class SectionMapper {
                 .collect(Collectors.toList());
 
         geologicalClasses.forEach(geologicalClass -> geologicalClass.setSection(section));
-
         section.setGeologicalClasses(geologicalClasses);
 
         return section;

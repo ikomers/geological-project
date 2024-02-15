@@ -1,6 +1,7 @@
 package natlex.example.geologicalproject.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import natlex.example.geologicalproject.data.dtos.SectionDto;
 import natlex.example.geologicalproject.data.entity.GeologicalClass;
 import natlex.example.geologicalproject.data.entity.Section;
 import natlex.example.geologicalproject.exceptions.NotFoundException;
@@ -99,6 +100,21 @@ public class SectionServiceImpl implements SectionService {
         // 5. Save sections
         sectionsForSaving.forEach(this::save);
     }
+
+    @Override
+    public void patch(Long sectionId, SectionDto sectionDto) {
+        Section existingSection = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new NotFoundException("Section not found with id: " + sectionId));
+
+        // Update only not-null DTO fields
+        if (sectionDto.getName() != null) {
+            existingSection.setName(sectionDto.getName());
+        }
+        // TODO update GC
+
+        sectionRepository.save(existingSection);
+    }
+
 
     @Override
     public void delete(Long sectionId) {

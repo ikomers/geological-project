@@ -1,6 +1,7 @@
 package natlex.example.geologicalproject.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import natlex.example.geologicalproject.data.dtos.GeologicalClassDto;
 import natlex.example.geologicalproject.data.entity.GeologicalClass;
 import natlex.example.geologicalproject.exceptions.NotFoundException;
 import natlex.example.geologicalproject.repositories.GeologicalClassRepository;
@@ -47,6 +48,24 @@ public class GeologicalClassServiceImpl implements GeologicalClassService {
 
         geologicalClassRepository.save(existingGeologicalClass);
     }
+
+    @Override
+    public void patch(Long id, GeologicalClassDto geologicalClassDto) {
+        GeologicalClass existingGeologicalClass = geologicalClassRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("GeologicalClass not found with id: " + id));
+
+        // Update only not-null DTO fields
+        if (geologicalClassDto.getName() != null) {
+            existingGeologicalClass.setName(geologicalClassDto.getName());
+        }
+
+        if (geologicalClassDto.getCode() != null) {
+            existingGeologicalClass.setCode(geologicalClassDto.getCode());
+        }
+
+        geologicalClassRepository.save(existingGeologicalClass);
+    }
+
 
     @Override
     public void delete(Long id) {

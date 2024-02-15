@@ -58,6 +58,16 @@ public class GeologicalClassController {
         return new RestResponse("Geological class updated successfully");
     }
 
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public RestResponse patchGeologicalClass(@PathVariable Long id,
+                                             @RequestBody GeologicalClassDto geologicalClassDto) {
+        log.info("Received request to patch GeologicalClass with ID {}: {}", id, geologicalClassDto);
+        geologicalClassService.patch(id, geologicalClassDto);
+        return new RestResponse("patched");
+    }
+
+
     @Authorized
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

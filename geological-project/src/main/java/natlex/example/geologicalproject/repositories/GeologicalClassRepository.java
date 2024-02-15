@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface GeologicalClassRepository extends JpaRepository<GeologicalClass, Long> {
 
-    List<GeologicalClass> findBySectionId(Long sectionId);
+//    List<GeologicalClass> findBySectionId(Long sectionId);
 }

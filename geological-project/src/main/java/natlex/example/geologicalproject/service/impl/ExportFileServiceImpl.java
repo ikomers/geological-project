@@ -13,12 +13,16 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,14 +31,24 @@ import java.util.concurrent.CompletableFuture;
 public class ExportFileServiceImpl implements ExportFileService {
     private final SectionService sectionService;
     private final JobResultService jobResultService;
+
+    /**
+     * This service method has the same architecture logic like importAsync
+     * For managing my time I had implement like this, but here points below that can improve code
+     * Break down the method into smaller, focused methods. Each method should handle a specific task, such as creating
+     * a workbook, resolving data, and saving the workbook.
+     * Avoid Hardcoding File Name. I prefer use generic type for specific implementation (like HSSFWorkbook).
+     * Add more detailed log statements.
+     * With more detailed task it can be more flexible, like for updating data, saving etc.
+     */
     @Async
     @Transactional
     public CompletableFuture<JobResult> exportAsync() {
         List<Section> sections = sectionService.findAll();
 
-        JobResult jobEntity = new JobResult();
-        jobEntity.setStatus(JobStatus.IN_PROGRESS);
-        jobResultService.save(jobEntity);
+        JobResult jobResult = new JobResult();
+        jobResult.setStatus(JobStatus.IN_PROGRESS);
+        jobResultService.save(jobResult);
 
         try (Workbook workbook = new HSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("list1");
@@ -88,19 +102,46 @@ public class ExportFileServiceImpl implements ExportFileService {
             // saving
             try (FileOutputStream fileOut = new FileOutputStream("geological_data.xls")) {
                 workbook.write(fileOut);
+                jobResult.setResult("Export successful");
             } catch (IOException e) {
-                jobEntity.setStatus(JobStatus.ERROR);
-                jobEntity.setResult("Error during export: " + e.getMessage());
+                jobResult.setStatus(JobStatus.ERROR);
+                jobResult.setResult("Error during export: " + e.getMessage());
             }
 
-            jobEntity.setStatus(JobStatus.DONE);
+            jobResult.setStatus(JobStatus.DONE);
         } catch (Exception e) {
-            jobEntity.setStatus(JobStatus.ERROR);
-            jobEntity.setResult("Error during export: " + e.getMessage());
+            jobResult.setStatus(JobStatus.ERROR);
+            jobResult.setResult("Error during export: " + e.getMessage());
         } finally {
-            jobResultService.save(jobEntity);
+            jobResultService.save(jobResult);
         }
 
-        return CompletableFuture.completedFuture(jobEntity);
+        return CompletableFuture.completedFuture(jobResult);
+    }
+
+    @Override
+    public JobResult getExportStatus(Long id) {
+        return jobResultService.findById(id);
+    }
+
+    public Resource downloadFile(Long id) {
+        JobResult jobResult = getExportStatus(id);
+
+        if (jobResult.getStatus() == JobStatus.IN_PROGRESS) {
+            throw new RuntimeException("Export is in progress. File is not available yet.");
+        } else if (jobResult.getStatus() == JobStatus.ERROR) {
+            throw new RuntimeException("Export failed. File is not available.");
+        }
+
+        // Return the resource for downloading
+        // Assuming the file is stored in the current working directory with the name "geological_data.xls"
+        Path filePath = Paths.get("geological_data.xls");
+        Resource resource = new FileSystemResource(filePath.toFile());
+
+        if (resource.exists() && resource.isReadable()) {
+            return resource;
+        } else {
+            throw new RuntimeException("File not found or cannot be read.");
+        }
     }
 }
