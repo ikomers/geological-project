@@ -8,8 +8,6 @@ import java.util.concurrent.CompletableFuture;
 public interface ImportFileService {
 
     void importData(MultipartFile file, JobResult jobResult);
-
     CompletableFuture<JobResult> importAsync(MultipartFile file);
-
     JobResult getImportStatus(Long id);
 }

@@ -10,10 +10,7 @@ public interface GeologicalClassService {
     GeologicalClass findById(Long id);
     GeologicalClass save(GeologicalClass geologicalClass);
     void update(Long id, GeologicalClass updatedGeologicalClass);
-
     void patch(Long id, GeologicalClassDto geologicalClassDto);
-
     void delete(Long id);
-
     void saveAll(List<GeologicalClass> geologicalClasses);
 }
