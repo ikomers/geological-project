@@ -7,7 +7,6 @@ import natlex.example.geologicalproject.data.entity.JobStatus;
 import natlex.example.geologicalproject.exceptions.NotFoundException;
 import natlex.example.geologicalproject.repositories.JobResultRepository;
 import natlex.example.geologicalproject.service.JobResultService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

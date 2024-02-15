@@ -3,20 +3,17 @@ package natlex.example.geologicalproject.service.impl;
 import lombok.RequiredArgsConstructor;
 import natlex.example.geologicalproject.data.entity.GeologicalClass;
 import natlex.example.geologicalproject.data.entity.Section;
-import natlex.example.geologicalproject.data.mapper.SectionMapper;
 import natlex.example.geologicalproject.exceptions.NotFoundException;
 import natlex.example.geologicalproject.repositories.SectionRepository;
 import natlex.example.geologicalproject.service.GeologicalClassService;
 import natlex.example.geologicalproject.service.SectionService;
 import org.apache.commons.lang3.SerializationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

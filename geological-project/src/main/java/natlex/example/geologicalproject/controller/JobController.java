@@ -1,7 +1,6 @@
 package natlex.example.geologicalproject.controller;
 
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import natlex.example.geologicalproject.aspect.annotation.Authorized;
