@@ -1,20 +1,24 @@
 Geological Project
 
 Description
+
 A project for managing geological classes and sections. 
 Implements REST CRUD API for working with data and has functionality for importing and exporting data in XLS format.
 
 Requirements
+
 Java 17
 PostgreSQL
 
 Installation
+
 Clone the repository: 
 git clone https://github.com/YOUR_USERNAME/geological-project.git
 
 Fill in the configuration files, for example, application.property
 
 Usage
+
 CRUD API for Sections and GeologicalClasses
 
 Get all Sections
