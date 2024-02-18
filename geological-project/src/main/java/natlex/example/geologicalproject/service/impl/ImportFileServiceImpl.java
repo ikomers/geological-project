@@ -10,6 +10,7 @@ import natlex.example.geologicalproject.service.JobResultService;
 import natlex.example.geologicalproject.service.SectionService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ public class ImportFileServiceImpl implements ImportFileService {
     private final JobResultService jobResultService;
 
     @Override
+    @Async
     public CompletableFuture<JobResult> importAsync(MultipartFile file) {
         return CompletableFuture.supplyAsync(() -> {
             JobResult jobResult = jobResultService.create();

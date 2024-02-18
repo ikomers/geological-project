@@ -19,36 +19,6 @@ import java.util.concurrent.CompletableFuture;
 public class JobResultServiceImpl implements JobResultService {
     private final JobResultRepository jobResultRepository;
 
-    @Async
-    public CompletableFuture<JobResult> importData(String filePath) {
-
-        JobResult result = new JobResult();
-        result.setStatus(JobStatus.DONE);
-        result.setResult("Import successful");
-        result.setTimestamp(LocalDateTime.now());
-        jobResultRepository.save(result);
-        return CompletableFuture.completedFuture(result);
-    }
-
-    @Async
-    public CompletableFuture<JobResult> exportData(String filePath) {
-        JobResult result = new JobResult();
-        result.setStatus(JobStatus.DONE);
-        result.setResult("Export successful");
-        result.setTimestamp(LocalDateTime.now());
-        jobResultRepository.save(result);
-        return CompletableFuture.completedFuture(result);
-    }
-
-    private JobResult handleError(Exception e) {
-        JobResult errorResult = new JobResult();
-        errorResult.setStatus(JobStatus.ERROR);
-        errorResult.setResult("An error occurred: " + e.getMessage());
-        errorResult.setTimestamp(LocalDateTime.now());
-        jobResultRepository.save(errorResult);
-        return errorResult;
-    }
-
     @Override
     @Transactional
     public void save(JobResult jobResult) {
