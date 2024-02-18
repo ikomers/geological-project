@@ -14,12 +14,15 @@ import org.springframework.stereotype.Component;
 public class AuthorizationAspect {
     @Autowired
     private HttpServletRequest request;
+
+    @Value("${auth.header.name}")
+    String header;
     @Value("${competition.management.token}")
     private String competitionManagementToken;
 
     @Around("@annotation(natlex.example.geologicalproject.aspect.annotation.Authorized)")
     public Object checkAuthorization(ProceedingJoinPoint joinPoint) throws Throwable {
-        String token = request.getHeader("X-Auth-Token");
+        String token = request.getHeader(header);
         if (token == null || !token.equals(competitionManagementToken)) {
             throw new NotAuthorizedException("Not Authorized");
         }

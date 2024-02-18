@@ -63,9 +63,7 @@ public class SectionController {
     public RestResponse updateSection(@PathVariable Long sectionId,
                                       @RequestBody @Valid SectionDto sectionDto) {
         log.info("Received request to update section with ID {}: {}", sectionId, sectionDto);
-
         sectionService.update(sectionId, sectionMapper.toEntity(sectionDto));
-
         return new RestResponse("updated");
     }
 
@@ -74,9 +72,7 @@ public class SectionController {
     public RestResponse patchSection(@PathVariable Long sectionId,
                                      @RequestBody SectionDto sectionDto) {
         log.info("Received request to patch section with ID {}: {}", sectionId, sectionDto);
-
         sectionService.patch(sectionId, sectionDto);
-
         return new RestResponse("patched");
     }
 

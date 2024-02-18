@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,6 +64,7 @@ public class GeologicalClassServiceTests {
     @Test
     public void testGeologicalClassServiceDelete() {
         // Save
+
         GeologicalClass newGeologicalClass = new GeologicalClass();
         newGeologicalClass.setName("Test GeologicalClass");
         newGeologicalClass.setCode("GC123");
